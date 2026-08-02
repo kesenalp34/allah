@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>İlayda'ya Özel...</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Great+Vibes&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-dark: #0a0406;
+            --bordo-dark: #2a080c;
+            --bordo-main: #58111a;
+            --bordo-light: #800020;
+            --bordo-accent: #a31536;
+            --gold-light: #f3e5ab;
+            --text-light: #f5e6e8;
+            --text-muted: #c9a0a8;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            font-family: 'Montserrat', sans-serif;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+
+        /* Ambient Floral Background */
+        .flower-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.12;
+            background-image: 
+                radial-gradient(circle at 10% 20%, var(--bordo-accent) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, var(--bordo-light) 0%, transparent 40%);
+        }
+
+        /* FLOATING PETALS ANIMATION */
+        .petal {
+            position: fixed;
+            background: linear-gradient(135deg, #a31536, #58111a);
+            border-radius: 150% 0 150% 0;
+            pointer-events: none;
+            z-index: 1;
+            opacity: 0.7;
+            animation: animatePetal 10s linear infinite;
+        }
+
+        @keyframes animatePetal {
+            0% {
+                transform: translateY(-10vh) rotate(0deg) scale(0.8);
+                opacity: 0;
+            }
+            10% { opacity: 0.8; }
+            90% { opacity: 0.8; }
+            100% {
+                transform: translateY(105vh) rotate(360deg) scale(1.2);
+                opacity: 0;
+            }
+        }
+
+        /* AUDIO PLAYER CONTROL */
+        .music-control {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 100;
+            background: rgba(42, 8, 12, 0.85);
+            border: 1px solid var(--bordo-accent);
+            padding: 12px 20px;
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            backdrop-filter: blur(8px);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.6);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .music-control:hover {
+            transform: scale(1.05);
+            background: var(--bordo-main);
+            box-shadow: 0 0 15px rgba(163, 21, 54, 0.5);
+        }
+
+        .music-icon {
+            font-size: 1.2rem;
+            animation: spin 4s linear infinite;
+            animation-play-state: paused;
+        }
+
+        .music-control.playing .music-icon {
+            animation-play-state: running;
+        }
+
+        @keyframes spin {
+            100% { transform: rotate(360deg); }
+        }
+
+        /* ENTRY OVERLAY / INTRO ANIMATION */
+        #intro-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at center, #3d0a11 0%, #0a0406 100%);
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            transition: opacity 1.5s ease, visibility 1.5s ease;
+        }
+
+        .intro-card {
+            padding: 40px;
+            border-radius: 20px;
+            background: rgba(10, 4, 6, 0.5);
+            border: 1px solid rgba(163, 21, 54, 0.3);
+            box-shadow: 0 0 50px rgba(88, 17, 26, 0.4);
+            animation: pulseGlow 3s infinite alternate;
+            max-width: 90%;
+            width: 450px;
+        }
+
+        @keyframes pulseGlow {
+            0% { box-shadow: 0 0 30px rgba(88, 17, 26, 0.3); }
+            100% { box-shadow: 0 0 60px rgba(163, 21, 54, 0.6); }
+        }
+
+        .intro-title {
+            font-family: 'Great Vibes', cursive;
+            font-size: 3.5rem;
+            color: var(--text-light);
+            margin-bottom: 15px;
+            text-shadow: 0 0 10px rgba(245, 230, 232, 0.3);
+        }
+
+        .intro-subtitle {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            margin-bottom: 30px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .enter-btn {
+            background: linear-gradient(45deg, var(--bordo-main), var(--bordo-accent));
+            color: white;
+            border: none;
+            padding: 14px 36px;
+            font-size: 1rem;
+            font-family: 'Cinzel', serif;
+            letter-spacing: 2px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+        }
+
+        .enter-btn:hover {
+            letter-spacing: 4px;
+            box-shadow: 0 0 25px rgba(163, 21, 54, 0.8);
+            transform: translateY(-2deg);
+        }
+
+        /* MAIN CONTENT STRUCTURE */
+        section {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 80px 20px;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* HERO SECTION */
+        .hero-section {
+            text-align: center;
+            background: linear-gradient(180deg, rgba(10,4,6,0.8) 0%, rgba(42,8,12,0.6) 100%);
+        }
+
+        .hero-flowers {
+            width: 120px;
+            height: 120px;
+            margin-bottom: 25px;
+            opacity: 0.9;
+            filter: drop-shadow(0 0 12px rgba(163, 21, 54, 0.5));
+        }
+
+        .hero-text {
+            font-family: 'Cinzel', serif;
+            font-size: 2.8rem;
+            color: var(--text-light);
+            letter-spacing: 3px;
+            margin-bottom: 20px;
+            line-height: 1.3;
+        }
+
+        .hero-subtext {
+            font-family: 'Great Vibes', cursive;
+            font-size: 2.2rem;
+            color: var(--text-muted);
+        }
+
+        .scroll-indicator {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: bounce 2s infinite;
+            color: var(--text-muted);
+            font-size: 1.5rem;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translate(-50%, 0); }
+            40% { transform: translate(-50%, -15px); }
+            60% { transform: translate(-50%, -7px); }
+        }
+
+        /* LETTER SECTION */
+        .letter-section {
+            background: linear-gradient(180deg, rgba(42,8,12,0.6) 0%, rgba(10,4,6,0.9) 100%);
+        }
+
+        .letter-container {
+            max-width: 750px;
+            width: 100%;
+            background: rgba(20, 5, 8, 0.75);
+            border: 1px solid rgba(128, 0, 32, 0.4);
+            border-radius: 15px;
+            padding: 50px 40px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+            position: relative;
+            backdrop-filter: blur(5px);
+        }
+
+        .letter-container::before {
+            content: '';
+            position: absolute;
+            top: 15px; left: 15px; right: 15px; bottom: 15px;
+            border: 1px dashed rgba(163, 21, 54, 0.25);
+            border-radius: 10px;
+            pointer-events: none;
+        }
+
+        .letter-header {
+            font-family: 'Great Vibes', cursive;
+            font-size: 3rem;
+            color: var(--bordo-accent);
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .letter-content {
+            font-size: 1.1rem;
+            line-height: 1.9;
+            color: #ead6d9;
+            white-space: pre-line;
+            font-weight: 300;
+        }
+
+        .letter-signature {
+            margin-top: 40px;
+            text-align: right;
+            font-family: 'Great Vibes', cursive;
+            font-size: 2rem;
+            color: var(--text-muted);
+        }
+
+        /* CELEBRATION / FINAL SECTION */
+        .final-section {
+            text-align: center;
+            background: radial-gradient(circle at center, rgba(88,11,26,0.4) 0%, rgba(10,4,6,1) 80%);
+        }
+
+        .birthday-card {
+            background: rgba(15, 5, 8, 0.8);
+            padding: 60px 40px;
+            border-radius: 20px;
+            border: 1px solid var(--bordo-light);
+            box-shadow: 0 0 50px rgba(88, 17, 26, 0.5);
+            max-width: 650px;
+            width: 100%;
+        }
+
+        .final-title {
+            font-family: 'Cinzel', serif;
+            font-size: 3rem;
+            color: var(--text-light);
+            margin-bottom: 20px;
+            text-shadow: 0 0 15px rgba(163, 21, 54, 0.6);
+        }
+
+        .final-heart {
+            font-size: 4rem;
+            color: var(--bordo-accent);
+            margin: 20px 0;
+            display: inline-block;
+            animation: heartBeat 1.5s infinite;
+        }
+
+        @keyframes heartBeat {
+            0% { transform: scale(1); }
+            14% { transform: scale(1.15); }
+            28% { transform: scale(1); }
+            42% { transform: scale(1.15); }
+            70% { transform: scale(1); }
+        }
+
+        .flower-decorations {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 30px;
+            font-size: 1.8rem;
+            color: var(--text-muted);
+        }
+
+        /* SCROLL REVEAL ANIMATIONS */
+        .reveal {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* RESPONSIVE DESIGN */
+        @media (max-width: 768px) {
+            .hero-text { font-size: 2rem; }
+            .hero-subtext { font-size: 1.7rem; }
+            .letter-container { padding: 30px 20px; }
+            .letter-header { font-size: 2.3rem; }
+            .letter-content { font-size: 1rem; }
+            .final-title { font-size: 2.2rem; }
+            .intro-title { font-size: 2.8rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="flower-bg"></div>
+
+    <!-- AUDIO ELEMENT (Arka Plan Müziği) -->
+    <!-- MP3 dosyanı müzik.mp3 ismiyle index.html ile aynı klasöre koymalısın -->
+    <audio id="bg-music" loop>
+        <source src="muzik.mp3" type="audio/mpeg">
+        Tarayıcınız ses öğesini desteklemiyor.
+    </audio>
+
+    <!-- Müzik Kontrol Butonu -->
+    <div class="music-control" id="music-btn" onclick="toggleMusic()">
+        <span class="music-icon">🎵</span>
+        <span id="music-text" style="font-size: 0.85rem; letter-spacing: 1px;">Müzik</span>
+    </div>
+
+    <!-- GİRİŞ EKRANI / ANİMASYONU (INTRO OVERLAY) -->
+    <div id="intro-overlay">
+        <div class="intro-card">
+            <svg class="hero-flowers" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <!-- Nergis & Gül Sembolik İllüstrasyonu (SVG) -->
+                <circle cx="50" cy="50" r="45" stroke="#800020" stroke-width="2" fill="none"/>
+                <path d="M50 20 C40 35 30 40 50 65 C70 40 60 35 50 20 Z" fill="#a31536"/>
+                <path d="M35 35 C45 45 40 60 65 50 C40 70 35 60 35 35 Z" fill="#58111a"/>
+                <circle cx="50" cy="50" r="8" fill="#f3e5ab"/>
+            </svg>
+            <h1 class="intro-title">Sana Bir Sürprizim Var</h1>
+            <p class="intro-subtitle">Görsel ve İşitsel Bir Deneyim İçin Dokun</p>
+            <button class="enter-btn" onclick="startExperience()">GİRİŞ YAP</button>
+        </div>
+    </div>
+
+    <!-- BÖLÜM 1: GİRİŞ / KARŞILAMA -->
+    <section class="hero-section">
+        <div class="reveal">
+            <svg class="hero-flowers" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="50" cy="50" r="40" stroke="#a31536" stroke-width="1.5" fill="none"/>
+                <path d="M50 25 C42 38 35 42 50 62 C65 42 58 38 50 25 Z" fill="#800020"/>
+                <circle cx="50" cy="48" r="6" fill="#f3e5ab"/>
+            </svg>
+            <h1 class="hero-text">Bu site senin için İlayda...</h1>
+            <p class="hero-subtext">Nergis kokulu, gül zarafetinde bir dünya</p>
+        </div>
+        <div class="scroll-indicator">
+            <span>↓</span>
+        </div>
+    </section>
+
+    <!-- BÖLÜM 2: MEKTUP -->
+    <section class="letter-section">
+        <div class="letter-container reveal">
+            <div class="letter-header">Sevgili İlayda,</div>
+            <div class="letter-content" id="letter-text">
+                [BURAYA KENDİ MEKTUBUNU YAZACAKSIN]
+
+                Hayatımı güzelleştiren, varlığıyla her günüme anlam katan en özel insana...
+                
+                Nergislerin o eşsiz masumluğunu, güllerin o derin ve asil zarafetini sende buluyorum. Bu sayfa, sana olan sevgimin ve hislerimin küçük bir yansıması.
+
+                Her zaman yanımda olman, gülüşünle dünyamı aydınlatman dileğiyle...
+            </div>
+            <div class="letter-signature">Seni Çok Seven...</div>
+        </div>
+    </section>
+
+    <!-- BÖLÜM 3: KAPANIŞ / İYİ Kİ DOĞDUN -->
+    <section class="final-section">
+        <div class="birthday-card reveal">
+            <h2 class="final-title">Seni Çok Seviyorum</h2>
+            <div class="final-heart">♥</div>
+            <h2 class="final-title" style="color: var(--bordo-accent);">İyi Ki Doğdun!</h2>
+            <p style="color: var(--text-muted); margin-top: 15px; font-size: 1.1rem;">
+                Yeni yaşın sana tüm güzellikleri, mutlulukları ve huzuru getirsin.
+            </p>
+            <div class="flower-decorations">
+                <span>🌼 Nergisler</span>
+                <span>•</span>
+                <span>🌹 Güller</span>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Arka Plan Müzik Kontrolü
+        const audio = document.getElementById('bg-music');
+        const musicBtn = document.getElementById('music-btn');
+        const musicText = document.getElementById('music-text');
+
+        function startExperience() {
+            // Giriş ekranını kapat
+            const overlay = document.getElementById('intro-overlay');
+            overlay.style.opacity = '0';
+            setTimeout(() => {
+                overlay.style.visibility = 'hidden';
+            }, 1500);
+
+            // Müziği başlat
+            playMusic();
+        }
+
+        function playMusic() {
+            audio.play().then(() => {
+                musicBtn.classList.add('playing');
+                musicText.innerText = 'Çalıyor';
+            }).catch(err => {
+                console.log("Müzik otomatik başlatılamadı:", err);
+            });
+        }
+
+        function toggleMusic() {
+            if (audio.paused) {
+                audio.play();
+                musicBtn.classList.add('playing');
+                musicText.innerText = 'Çalıyor';
+            } else {
+                audio.pause();
+                musicBtn.classList.remove('playing');
+                musicText.innerText = 'Duraklatıldı';
+            }
+        }
+
+        // Yaprak Dökümü Animasyonu Dinamik Oluşturma
+        function createPetals() {
+            const container = document.body;
+            for (let i = 0; i < 25; i++) {
+                const petal = document.createElement('div');
+                petal.classList.add('petal');
+                
+                // Rastgele boyut ve konumlar
+                const size = Math.random() * 15 + 10;
+                petal.style.width = `${size}px`;
+                petal.style.height = `${size * 1.4}px`;
+                petal.style.left = `${Math.random() * 100}vw`;
+                petal.style.animationDuration = `${Math.random() * 5 + 7}s`;
+                petal.style.animationDelay = `${Math.random() * 5}s`;
+                
+                container.appendChild(petal);
+            }
+        }
+
+        // Scroll Animasyonu (Aşağı Kaydırdıkça Parla/Açıl)
+        function handleScroll() {
+            const reveals = document.querySelectorAll('.reveal');
+            const windowHeight = window.innerHeight;
+
+            reveals.forEach(element => {
+                const elementTop = element.getBoundingClientRect().top;
+                const elementVisible = 150;
+
+                if (elementTop < windowHeight - elementVisible) {
+                    element.classList.add('active');
+                }
+            });
+        }
+
+        window.addEventListener('scroll', handleScroll);
+        window.addEventListener('load', () => {
+            createPetals();
+            handleScroll();
+        });
+    </script>
+</body>
+</html>
